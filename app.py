@@ -8,6 +8,6 @@ import plotly.express as px
 
 app = dash.Dash()
 
-if (__name__ == "__main__"){
+if (__name__ == "__main__"):
     app.run_server(debug=True)
-}
+
