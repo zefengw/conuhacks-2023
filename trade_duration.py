@@ -23,7 +23,7 @@ from utils import timestamp_to_datetime, datetime_to_epoch, epoch_to_datetime, l
 
 
 
-def generate_graph_data(exchange: str, num_intervals: int, request_type: str):
+def generate_duration_graph_df(exchange: str, num_intervals: int, request_type: str):
 
 
 # beginning time of each time interval
@@ -202,7 +202,7 @@ def display_selected_intervals(selected_intervals, selected_exchange, request_ty
     
 
 
-    df = generate_graph_data(selected_exchange, selected_intervals, request_type)
+    df = generate_duration_graph_df(selected_exchange, selected_intervals, request_type)
 
     fig = go.Figure(data=go.Heatmap(
         z=df["Number of Orders"],
