@@ -65,7 +65,7 @@ def update_graph(radio_value, dropdown_value):
             new_row = pd.DataFrame(
                 {"Interval": [date_obj], "Price": [price], "Number of Orders": [num_orders]})
             df = pd.concat([new_row, df.loc[:]]).reset_index(drop=True)
-        fig = px.scatter_3d(df, x='Interval', y='Price', z='Number of Orders', height=750, width=750)
+        fig = px.scatter_3d(df, x='Interval', y='Price', z='Number of Orders', height=750, width=750, opacity=0.7)
         return fig
     elif radio_value == 'OF':
         obj = utils.load_json(dropdown_value + "DataByOrderID.json" )
@@ -105,7 +105,7 @@ def update_graph(radio_value, dropdown_value):
             new_row = pd.DataFrame(
                 {"Interval": [date_obj], "Price": [price], "Order Filled": [num_orders]})
             df = pd.concat([new_row, df.loc[:]]).reset_index(drop=True)
-        fig = px.scatter_3d(df, x='Interval', y='Price', z='Order Filled', height=750, width=750)
+        fig = px.scatter_3d(df, x='Interval', y='Price', z='Order Filled', height=750, width=750, opacity=0.7)
         return fig
 
 
