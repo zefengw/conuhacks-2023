@@ -115,8 +115,6 @@ def generate_treemap(m_selected, message, top_x):
                 'values': 'Traded',
                 'parents': 'Market'
                 })
-
-    #fig.update_traces(root_color="#6D8388")
     fig.update_layout(paper_bgcolor="#303030",
     plot_bgcolor="#303030",
     font_color="#919191",
