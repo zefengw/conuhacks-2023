@@ -9,7 +9,7 @@
 
 .g1_container {
   border: 1px solid black;
-  padding: 10px;
+  padding: 15px;
   background-color: var(--bggrey);
 }
 
@@ -42,11 +42,23 @@
   transform: translateY(90px);
 }
 
+.g3_h1 {
+  color: rgb(50, 50, 50);
+  font-family: "Verdana";
+  font-size: 165px;
+  position: absolute;
+  right: 22px;
+  transform: translateY(10px);
+}
+
 @media screen and (max-width: 1300px) {
   .g1_h1 {
     font-size: 80px;
   }
   .g2_h1 {
+    font-size: 80px;
+  }
+  .g3_h1 {
     font-size: 80px;
   }
 }
@@ -58,6 +70,9 @@
   .g2_h1 {
     font-size: 50px;
   }
+  .g3_h1 {
+    font-size: 50px;
+  }
 }
 
 /* ---- GRAPH 2 ---- */
@@ -67,12 +82,11 @@
   font-size: 14px;
   color: white;
   padding: 10px;
-  margin-left: 10px;
   display: flex;
   justify-content: space-between;
   left: 10px;
   width: 300px;
-  margin: 15px 0 15px 0;
+  margin: 15px 0 15px 10px;
   flex-wrap: wrap;
 }
 

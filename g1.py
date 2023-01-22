@@ -57,7 +57,7 @@ g1.layout = html.Div(className="g1_container", children=[
                      ],
                  multi=False,
                  value="Aequitas",
-                 style={'width':"300px", "background-color": "#D5D5D5"}
+                 style={'width':"200px", "background-color": "#D5D5D5"}
                  )]),
     html.Div(className="g1_label", children=[
         html.P(children=["Symbol: "], style={"color":"#ffffff", "margin": "10px"}),
@@ -66,7 +66,7 @@ g1.layout = html.Div(className="g1_container", children=[
                  options=options,
                  multi=False,
                  value="All",
-                 style={'width':"300px", "background-color": "#D5D5D5"}
+                 style={'width':"200px", "background-color": "#D5D5D5"}
                  )]),
     
 
