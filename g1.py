@@ -2,7 +2,11 @@ import json
 from dash import dcc, html, dash
 from dash.dependencies import Input, Output
 import plotly.express as px
+import plotly.graph_objects as go
 from utils import *
+
+import pandas as pd
+import numpy as np
 
 
 
@@ -11,20 +15,18 @@ from utils import *
 
 timestamp, symbol, price, market = [], [], [], []
 
-def parseFile(path: str) -> None:
-    f = open(path)
-    data = json.load(f)
+def parseFile(filename: str) -> None:
+    data = load_json(filename)
     for i in data:
         if i["MessageType"] == "NewOrderRequest":
             price.append(i["OrderPrice"])
             timestamp.append(i["TimeStampEpoch"])
             symbol.append(i["Symbol"])
             market.append(i["Exchange"])
-    f.close()
 
-parseFile("data/AequitasData.json")
-parseFile("data/AlphaData.json")
-parseFile("data/TSXData.json")
+parseFile("AequitasData.json")
+parseFile("AlphaData.json")
+parseFile("TSXData.json")
 
 
 
@@ -37,8 +39,6 @@ def generateOptions():
     for k in set(symbol):
         options.append({"label": k, "value": k})
     return options
-
-options = generateOptions()
 
     
 g1 = dash.Dash(__name__)
@@ -63,7 +63,7 @@ g1.layout = html.Div(className="g1_container", children=[
         html.P(children=["Symbol: "], style={"color":"#ffffff", "margin": "10px"}),
         dcc.Dropdown(id="symbol_selected",
         className="dropdown",
-                 options=options,
+                 options=generateOptions(),
                  multi=False,
                  value="All",
                  style={'width':"200px", "background-color": "#D5D5D5"}
@@ -91,7 +91,6 @@ def update_graph(m_selected, s_selected):
     #dff = dff[dff["Affected by"] == "Varroa_mites"]
 
     # Plotly Express
-
 
     match m_selected:
         case "Aequitas":
@@ -121,16 +120,22 @@ def update_graph(m_selected, s_selected):
         copy2_price = copy_price
         copy2_timestamp = copy_timestamp
         
-
-
     display_dt = []
     for k in copy2_timestamp:
         display_dt.append(epoch_to_datetime(int(k)))
 
     if len(display_dt) == 0 or len(copy2_price) == 0:
-        fig = px.area(title="This stock is not traded in the selected market")
+        fig = px.area(title="This symbol is not traded in the selected market")
     else:
-        fig = px.area(x=display_dt, y=copy2_price, title="Stock order requests over time",labels=dict(x="Time ", y="Price ($) "))
+
+        processed_data = remove_outliers(display_dt, copy2_price)
+        clean_df = processed_data[0]
+        outliers_df = processed_data[1]
+
+        fig = px.area(x=clean_df["Time"], y=clean_df["Price"], title=f"Order requests over time for {s_selected}",labels=dict(x="Time ", y="Price ($) "))
+
+        fig.add_scatter(x=outliers_df["Time"], y=outliers_df["Price"], showlegend=False, mode="markers")
+        #fig.add_trace(px.scatter(outliers_df))
 
 
     fig.update_layout(paper_bgcolor="#303030",
@@ -147,5 +152,44 @@ def update_graph(m_selected, s_selected):
     return fig
 
 
+def remove_outliers(xvalues: list, yvalues: list) -> list:
+
+    data = {"Time": xvalues, "Price": yvalues}
+
+    df = pd.DataFrame(data)
+
+    #print(df["Price"].describe())
+
+    q25, q75 = np.percentile(df["Price"], [25, 75])
+
+    #print(q25, q75)
+
+    # Using Tukey's fences
+
+    lower_limit = max(0, q25 - 1.5 * (q75 - q25))
+    upper_limit = q75 + 1.5 * (q75 - q25)
+
+    #print(upper_limit, lower_limit)
+
+    upper_outliers = pd.DataFrame(df[df['Price'] > upper_limit])
+    lower_outliers = pd.DataFrame(df[df["Price"] < lower_limit])
+    clean_df = df[(df["Price"] <= upper_limit) & (df["Price"] >= lower_limit)]
+
+    #print(clean_df)
+
+    #print(upper_outliers)
+    #print(lower_outliers)
+    outliers_df = pd.concat([upper_outliers, lower_outliers])
+    #print(outliers_df)
+
+    return [clean_df, outliers_df]
+    
+    
+
+
+
 if (__name__ == "__main__"):
-    g1.run_server(debug=True)
+    pass
+    #g1.run_server(debug=True)
+
+    #remove_outliers([1, 2, 3, 4, 5], [2, 4, 6, 1000, 1])
