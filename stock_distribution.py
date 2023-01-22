@@ -10,7 +10,7 @@ from dash.dependencies import Input, Output
 app = Dash(__name__)
 
 app.layout = html.Div(className="g1_container", children=[
-    html.H1("Graph 2", className="g2_h1"),
+    html.H1("Graph 2", className="g_h1 g2_h1"),
     html.P(children=["Market: "], style={"color":"#ffffff", "margin": "10px"}),
     dcc.Dropdown(id='market_selected',
       className="dropdown",

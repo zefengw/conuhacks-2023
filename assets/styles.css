@@ -1,6 +1,6 @@
 :root {
   --bggrey: #2b2b2b;
-  --dropdowngrey: rgb(78, 78, 78);
+  --dropdowngrey: #4e4e4e;
 }
 
 * {
@@ -25,7 +25,7 @@
   color: rgb(187, 187, 187) !important;
 }
 
-.g1_h1 {
+.g_h1 {
   color: rgb(50, 50, 50);
   font-family: "Verdana";
   font-size: 165px;
@@ -34,43 +34,25 @@
 }
 
 .g2_h1 {
-  color: rgb(50, 50, 50);
-  font-family: "Verdana";
-  font-size: 165px;
-  position: absolute;
-  right: 22px;
   transform: translateY(90px);
 }
 
 .g3_h1 {
-  color: rgb(50, 50, 50);
-  font-family: "Verdana";
-  font-size: 165px;
-  position: absolute;
-  right: 22px;
   transform: translateY(10px);
 }
 
+.g4_h1 {
+  transform: translateY(-10px);
+}
+
 @media screen and (max-width: 1300px) {
-  .g1_h1 {
-    font-size: 80px;
-  }
-  .g2_h1 {
-    font-size: 80px;
-  }
-  .g3_h1 {
+  .g_h1 {
     font-size: 80px;
   }
 }
 
 @media screen and (max-width: 700px) {
-  .g1_h1 {
-    font-size: 50px;
-  }
-  .g2_h1 {
-    font-size: 50px;
-  }
-  .g3_h1 {
+  .g_h1 {
     font-size: 50px;
   }
 }
@@ -97,4 +79,12 @@
   font-size: 20px;
   width: 150px;
   background-color: var(--dropdowngrey);
+}
+
+.graph_container {
+  border: 10px solid var(--dropdowngrey);
+  background-color: #111111;
+  display: flex;
+  width: 100%;
+  justify-content: center;
 }

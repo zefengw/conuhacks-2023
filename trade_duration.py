@@ -166,7 +166,7 @@ app = dash.Dash()
 
 
 app.layout = html.Div(className="g1_container", children=[
-    html.H1("Graph 3", className="g3_h1"),
+    html.H1("Graph 3", className="g_h1 g3_h1"),
     html.P(children=["Market: "], style={"color":"#ffffff", "margin": "10px"}),
     dcc.Dropdown(["TSX", "Aequitas", "Alpha"], "Alpha", id='exchange-dropdown-menu', style={"width": "220px"}),
     html.Br(),

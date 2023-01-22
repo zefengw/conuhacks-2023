@@ -8,18 +8,23 @@ import plotly.express as px
 
 app = Dash(__name__)
 
-app.layout = html.Div([
-    dcc.Dropdown(id="dropdown", options=[{'label': 'TSX', 'value': 'TSX'}, {'label': 'Aequitas', 'value': 'Aequitas'}, {
-                 'label': 'Alpha', 'value': 'Alpha'}], value='TSX'),
-    dcc.Graph(id="time-volume-price-graph"),
-    dcc.RadioItems(
+app.layout = html.Div(className="g1_container", children=[
+    html.H1("Graph 4", className="g_h1 g4_h1"),
+    html.P(children=["Market: "], style={"color":"#ffffff", "margin": "10px"}),
+    dcc.Dropdown(id="dropdown", className="dropdown", options=[{'label': 'TSX', 'value': 'TSX'}, {'label': 'Aequitas', 'value': 'Aequitas'}, {
+                 'label': 'Alpha', 'value': 'Alpha'}], value='TSX', style={'width':'220px', "margin-bottom": "20px"}),
+    html.Div(className="radio_div", children=[
+        dcc.RadioItems(
         id = "radio",
+        className="radio",
         options=[
             {'label': 'New Order Request', 'value': 'NOR'},
             {'label': 'Orders Filled', 'value': 'OF'}
         ],
         value='NOR'
-    )
+)]),
+html.Br(),
+    html.Div(className="graph_container", children=[dcc.Graph(id="time-volume-price-graph", figure={})])
 ])
 
 @app.callback(
@@ -65,7 +70,8 @@ def update_graph(radio_value, dropdown_value):
             new_row = pd.DataFrame(
                 {"Interval": [date_obj], "Price": [price], "Number of Orders": [num_orders]})
             df = pd.concat([new_row, df.loc[:]]).reset_index(drop=True)
-        fig = px.scatter_3d(df, x='Interval', y='Price', z='Number of Orders', height=750, width=750, opacity=0.7, template="plotly_dark")
+        fig = px.scatter_3d(df, x='Interval', y='Price', z='Number of Orders', height=750, width=750, opacity=0.7, title="Order volume and price evolution", template="plotly_dark")
+        fig.update_layout(title_font_color="#4e4e4e"),
         return fig
     elif radio_value == 'OF':
         obj = utils.load_json(dropdown_value + "DataByOrderID.json" )
@@ -105,7 +111,8 @@ def update_graph(radio_value, dropdown_value):
             new_row = pd.DataFrame(
                 {"Interval": [date_obj], "Price": [price], "Order Filled": [num_orders]})
             df = pd.concat([new_row, df.loc[:]]).reset_index(drop=True)
-        fig = px.scatter_3d(df, x='Interval', y='Price', z='Order Filled', height=750, width=750, opacity=0.7, template="plotly_dark")
+        fig = px.scatter_3d(df, x='Interval', y='Price', z='Order Filled', opacity=0.7, title="Order volume and price evolution", template="plotly_dark")
+        fig.update_layout(title_font_color="#4e4e4e"),
         return fig
 
 
