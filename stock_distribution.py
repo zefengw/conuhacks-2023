@@ -21,7 +21,7 @@ app.layout = html.Div(className="g1_container", children=[
                 multi=False,
                 value='Aequitas',
                 style={
-                    'width':'300px'
+                    'width':'220px'
                 }),
                 html.P(children=["Message type: "], style={"color":"#ffffff", "margin": "35px 0px 20px 10px"}),
 
@@ -122,5 +122,5 @@ def generate_treemap(m_selected, message, top_x):
     )
     return fig
         
-if __name__ == '__main__':
-    app.run_server(debug=True)
+#if __name__ == '__main__':
+    #app.run_server(debug=True)

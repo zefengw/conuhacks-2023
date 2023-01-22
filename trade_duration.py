@@ -165,24 +165,24 @@ def generate_graph_data(exchange: str, num_intervals: int, request_type: str):
 app = dash.Dash()
 
 
-app.layout = html.Div([
-    html.H1(children='Hello Dash'),
-
-    html.Div(children='''
-        Dash: A web application framework for your data.
-    '''),
-
-    dcc.Dropdown(["TSX", "Aequitas", "Alpha"], "Alpha", id='exchange-dropdown-menu'),
-
+app.layout = html.Div(className="g1_container", children=[
+    html.H1("Graph 3", className="g3_h1"),
+    html.P(children=["Market: "], style={"color":"#ffffff", "margin": "10px"}),
+    dcc.Dropdown(["TSX", "Aequitas", "Alpha"], "Alpha", id='exchange-dropdown-menu', style={"width": "220px"}),
+    html.Br(),
+    html.P(children=["Transaction type: "], style={"color":"#ffffff", "margin": "10px"}),
+    html.Div(className="radio_div", children=[
     dcc.RadioItems(options=[
-        {"label": "New Order Requests", "value": "NewOrder"},
-        {"label": "Cancel Requests", "value": "Cancel"}
+        {"label": "    New Order Requests", "value": "NewOrder"},
+        {"label": "    Cancel Requests", "value": "Cancel"}
         ],
+        className="radio",
         value="NewOrder",
         id='request-type'
-        ),
+        )]),
 
-
+    html.Br(),
+    html.Br(),
     dcc.Graph(id="duration-graph"),
 
     dcc.Slider(10, 500, value=10, id="num-intervals-slider"),
@@ -209,6 +209,15 @@ def display_selected_intervals(selected_intervals, selected_exchange, request_ty
         x=df["Order Time"],
         y=df["Response Time"],
         colorscale='RdBu_r'))
+    
+    fig.update_layout(paper_bgcolor="#303030",
+    title="Distribution of average request completion times",
+    xaxis_title="Time",
+    yaxis_title="Request completion time",
+    plot_bgcolor="#303030",
+    font_color="#919191",
+    margin_pad=30,
+    )
 
 
     #fig = px.scatter(df, x="orderTimestamp", y="orderDuration", color="Symbol", hover_name="Symbol")
@@ -221,8 +230,8 @@ def display_selected_intervals(selected_intervals, selected_exchange, request_ty
 
 
 
-if (__name__ == "__main__"):
-    app.run_server(debug=True)
+#if (__name__ == "__main__"):
+    #app.run_server(debug=True)
 
 
 

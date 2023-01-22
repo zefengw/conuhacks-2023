@@ -56,7 +56,7 @@ g1.layout = html.Div(className="g1_container", children=[
                      ],
                  multi=False,
                  value="Aequitas",
-                 style={'width':"300px", "background-color": "#D5D5D5"}
+                 style={'width':"200px", "background-color": "#D5D5D5"}
                  )]),
     html.Div(className="g1_label", children=[
         html.P(children=["Symbol: "], style={"color":"#ffffff", "margin": "10px"}),
@@ -65,7 +65,7 @@ g1.layout = html.Div(className="g1_container", children=[
                  options=generateOptions(),
                  multi=False,
                  value="All",
-                 style={'width':"300px", "background-color": "#D5D5D5"}
+                 style={'width':"200px", "background-color": "#D5D5D5"}
                  )]),
     
 
@@ -146,5 +146,5 @@ def update_graph(m_selected, s_selected):
     return fig
 
 
-#if (__name__ == "__main__"):
-#    g1.run_server(debug=True)
+if (__name__ == "__main__"):
+    g1.run_server(debug=True)
