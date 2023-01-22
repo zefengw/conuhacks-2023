@@ -81,9 +81,9 @@ def generate_graph_data(exchange: str, num_intervals: int, request_type: str):
                         
                         #symbol = msg["Symbol"]
 
-                        durations.add(int(duration))
+                        durations.add(int(duration*500)/500)
 
-                        num_orders[(interval_timestamps[interval_index], int(duration))] += 1
+                        num_orders[(interval_timestamps[interval_index], int(duration*500)/500)] += 1
 
 
 
@@ -109,9 +109,9 @@ def generate_graph_data(exchange: str, num_intervals: int, request_type: str):
                         duration = (int(end_time) - int(start_time)) / 1000000000
                         
                         #symbol = msg["Symbol"]
-                        durations.add(int(duration))
+                        durations.add(int(duration*500)/500)
 
-                        num_orders[(interval_timestamps[interval_index], int(duration))] += 1
+                        num_orders[(interval_timestamps[interval_index], int(duration*500)/500)] += 1
 
 
 
@@ -120,14 +120,14 @@ def generate_graph_data(exchange: str, num_intervals: int, request_type: str):
                         break
 
     for i in range(len(interval_timestamps)):
-        for j in range(max(durations) + 1):
+        for j in durations:
 
             new_row = pd.DataFrame({"Order Time": [epoch_to_datetime(interval_timestamps[i]*1000000000)], "Response Time": [j], "Number of Orders": [num_orders[(interval_timestamps[i], j)]]})
 
             df = pd.concat([new_row, df.loc[:]]).reset_index(drop=True)
 
 
-    print(df)
+    #print(df)
 
     
     return df
@@ -185,7 +185,7 @@ app.layout = html.Div([
 
     dcc.Graph(id="duration-graph"),
 
-    dcc.RangeSlider(10, 1000, value=10, id="num-intervals-slider"),
+    dcc.Slider(10, 500, value=10, id="num-intervals-slider"),
 
 ])
 
@@ -199,7 +199,7 @@ app.layout = html.Div([
 )
 def display_selected_intervals(selected_intervals, selected_exchange, request_type):
 
-
+    
 
 
     df = generate_graph_data(selected_exchange, selected_intervals, request_type)
