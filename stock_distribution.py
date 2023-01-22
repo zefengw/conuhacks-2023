@@ -18,7 +18,12 @@ app.layout = html.Div(children=[
                     {'label': 'Alpha', 'value': 'Alpha'},
                     {'label': 'TSX', 'value': 'TSX'}],
                 multi=False,
-                value='Aequitas'),
+                value='Aequitas',
+                style={
+                    'background-color':'#283747',
+                    'border-color':'white',
+                    'width':'50%'
+                }),
 
     # Don't know if we'll need all types of messages. Can change later.
     dcc.RadioItems(id='message_selected',
@@ -36,7 +41,9 @@ app.layout = html.Div(children=[
         id='stock_distribution',
         figure={}
     )
-])
+], style={
+    'background-color':'#283747'
+})
 
 @app.callback(
     Output(component_id='stock_distribution', component_property='figure'),
@@ -73,7 +80,13 @@ def generate_treemap(m_selected, message, top_x):
 
     # Plotting the data into tree map
     if len(symbol_dict.keys()) == 0:
-        fig = px.treemap(names=['No symbols available'], parents=[m_selected], values=[100], title='Distribution of Stocks by Market ({})'.format(message))
+        fig = px.treemap(names=['No symbols available'], parents=[m_selected],
+                        title='Distribution of Stocks by Market ({})'.format(message),
+                        labels={
+                            'names': 'Symbol',
+                            'values': 'Traded',
+                            'parents': 'Market'
+                            })
     
     else:
         # Might want to add a note if top_x is larger than num of keys
@@ -83,9 +96,6 @@ def generate_treemap(m_selected, message, top_x):
 
             while len(l) != top_x:
                 l.pop()
-
-            print(sorted_sym_dict)
-            print(l)
             
             sorted_sym_dict = dict(l)
 
@@ -95,6 +105,7 @@ def generate_treemap(m_selected, message, top_x):
                 'values': 'Traded',
                 'parents': 'Market'
                 })
+
         else:
             fig = px.treemap(names=symbol_dict.keys(), parents=[m_selected] * len(symbol_dict.keys()), values=symbol_dict.values(), title='Distribution of Stocks by Market ({})'.format(message),
             labels={
@@ -103,28 +114,9 @@ def generate_treemap(m_selected, message, top_x):
                 'parents': 'Market'
                 })
 
-
-    fig.update_traces(root_color="lightgrey")
+    fig.update_traces(root_color="#6D8388")
 
     return fig
-
-# @app.callback(
-#     Output(component_id='max_selected', component_property='max'),
-#     Input(component_id='market_selected', component_property='value')
-# )
-# def get_max_symbols(m_selected):
-#     if m_selected == 'Aequitas':
-#         with open('data/AequitasData.json') as f:
-#             data = json.load(f)
-#     elif m_selected == 'Alpha':
-#         with open('data/AlphaData.json') as f:
-#             data = json.load(f)
-#     elif m_selected == 'TSX':
-#         with open('data/TSXData.json') as f:
-#             data = json.load(f)
-    
-#     return len(data)
-    
         
 if __name__ == '__main__':
     app.run_server(debug=True)
