@@ -44,7 +44,7 @@ options = generateOptions()
 g1 = dash.Dash(__name__)
 g1.layout = html.Div(className="g1_container", children=[
 
-    html.H1("Graph 1", className="g1_h1"),
+    html.H1("Graph 1", className="g_h1 g1_h1"),
 
     html.Div(className="g1_label", children=[
         html.P(children=["Market: "], style={"color":"#ffffff", "margin": "10px"}),
