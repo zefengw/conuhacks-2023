@@ -33,6 +33,10 @@
   right: 22px;
 }
 
+.g1_h1 {
+  transform: translateY(-40px);
+}
+
 .g2_h1 {
   transform: translateY(90px);
 }
@@ -42,7 +46,7 @@
 }
 
 .g4_h1 {
-  transform: translateY(-10px);
+  transform: translateY(-25px);
 }
 
 @media screen and (max-width: 1300px) {
@@ -87,4 +91,71 @@
   display: flex;
   width: 100%;
   justify-content: center;
+}
+
+.parralax {
+  overflow: hidden;
+  background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
+    url("dark.jpeg") no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  background-position-x: center;
+  background-color: transparent;
+  display: flex;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.parralax_text {
+  line-height: 40px;
+  text-align: center;
+  padding: 25px;
+  margin: 0px 35px;
+  font-size: 30px;
+  text-shadow: #2b2b2b;
+  color: rgb(203, 203, 203);
+  animation: floating 3s ease-in-out infinite;
+}
+
+@keyframes floating {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.hero {
+  margin: 0;
+  background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
+    url("datata.jpeg") no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  background-position-x: center;
+  display: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  grid-template-columns: 1fr;
+}
+
+.hero img {
+  border: 10px solid rgb(70, 70, 70);
+  margin-top: 170px;
+  background-color: #1d1d1d;
+  border-radius: 200px;
+}
+
+.logo {
+  width: 50%;
 }
