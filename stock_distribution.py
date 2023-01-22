@@ -9,10 +9,11 @@ from dash.dependencies import Input, Output
 
 app = Dash(__name__)
 
-app.layout = html.Div(children=[
-    html.H1(children='ConUHacks VII'),
-
+app.layout = html.Div(className="g1_container", children=[
+    html.H1("Graph 2", className="g2_h1"),
+    html.P(children=["Market: "], style={"color":"#ffffff", "margin": "10px"}),
     dcc.Dropdown(id='market_selected',
+      className="dropdown",
                 options=[
                     {'label': 'Aequitas', 'value': 'Aequitas'},
                     {'label': 'Alpha', 'value': 'Alpha'},
@@ -20,30 +21,31 @@ app.layout = html.Div(children=[
                 multi=False,
                 value='Aequitas',
                 style={
-                    'background-color':'#283747',
-                    'border-color':'white',
-                    'width':'50%'
+                    'width':'300px'
                 }),
+                html.P(children=["Message type: "], style={"color":"#ffffff", "margin": "35px 0px 20px 10px"}),
 
     # Don't know if we'll need all types of messages. Can change later.
+    html.Div(className="radio_div", children=[
     dcc.RadioItems(id='message_selected',
+                className="radio",
                 options=[
-                    {'label': 'NewOrderRequest', 'value': 'NewOrderRequest'},
-                    {'label': 'NewOrderAcknowledged', 'value': 'NewOrderAcknowledged'},
-                    {'label': 'CancelRequest', 'value': 'CancelRequest'},
-                    {'label': 'Cancel', 'value': 'Cancel'},
-                    {'label': 'Trade', 'value': 'Trade'}],
-                    value='Trade'),
+                    {'label': '   NewOrderRequest', 'value': 'NewOrderRequest'},
+                    {'label': '   NewOrderAcknowledged', 'value': 'NewOrderAcknowledged'},
+                    {'label': '   CancelRequest', 'value': 'CancelRequest'},
+                    {'label': '   Cancel', 'value': 'Cancel'},
+                    {'label': '   Trade', 'value': 'Trade'}],
+                    value='Trade')]),
 
-    dcc.Input(id='top_x', type='number', min=0, placeholder='Find top X symbols'),
-
+    dcc.Input(id='top_x', className="inputt", type='number', min=0, placeholder='# of Symbols'),
+    html.Br(),
+    html.Br(),
+    html.Br(),
     dcc.Graph(
         id='stock_distribution',
         figure={}
     )
-], style={
-    'background-color':'#283747'
-})
+])
 
 @app.callback(
     Output(component_id='stock_distribution', component_property='figure'),
@@ -114,8 +116,12 @@ def generate_treemap(m_selected, message, top_x):
                 'parents': 'Market'
                 })
 
-    fig.update_traces(root_color="#6D8388")
-
+    #fig.update_traces(root_color="#6D8388")
+    fig.update_layout(paper_bgcolor="#303030",
+    plot_bgcolor="#303030",
+    font_color="#919191",
+    margin_pad=10
+    )
     return fig
         
 if __name__ == '__main__':
