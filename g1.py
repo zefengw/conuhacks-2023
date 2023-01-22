@@ -146,5 +146,5 @@ def update_graph(m_selected, s_selected):
     return fig
 
 
-if (__name__ == "__main__"):
-    g1.run_server(debug=True)
+#if (__name__ == "__main__"):
+#    g1.run_server(debug=True)
