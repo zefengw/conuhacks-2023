@@ -1,0 +1,45 @@
+:root {
+  --bggrey: rgb(43, 43, 43);
+}
+
+* {
+  margin: 0;
+}
+
+.g1_container {
+  border: 1px solid black;
+  padding: 10px;
+  background-color: var(--bggrey);
+}
+
+.dropdown {
+  border: 3px solid var(--bggrey);
+}
+
+.dropdown .Select-value {
+  background-color: rgb(78, 78, 78) !important;
+}
+
+.dropdown .Select-value-label {
+  color: rgb(187, 187, 187) !important;
+}
+
+.g1_h1 {
+  color: rgb(50, 50, 50);
+  font-family: "Verdana";
+  font-size: 165px;
+  position: absolute;
+  right: 22px;
+}
+
+@media screen and (max-width: 1140px) {
+  .g1_h1 {
+    font-size: 80px;
+  }
+}
+
+@media screen and (max-width: 700px) {
+  .g1_h1 {
+    font-size: 50px;
+  }
+}
