@@ -15,6 +15,13 @@ app = dash.Dash()
 
 app.layout = html.Div(className="g1_container", children=[
 
+    html.Div(className="hero", style={"height":"90vh"}, children=[
+        html.Img(src="assets/logo2.png", className="logo"),
+        html.H2("Visualization deriving crucial trading insights", style={"color": "#CBCBCB", "padding-top": "15px", "font-size":"23px","transform":"translateY(-75px)"})
+
+    ]),
+ html.Div(style={"height":"10vh"}),
+  html.Div(style={"height":"10vh"}),
 
     # Graph 1
     html.H1("Graph 1", className="g_h1 g1_h1"),
@@ -50,6 +57,13 @@ app.layout = html.Div(className="g1_container", children=[
 
 
     html.Div(style={"height":"11vh"}),
+
+
+    html.Div(className="parralax", style={"height":"85vh"}, children=[
+        html.H4("Price evolution for given trade symbols can be analyzed with Graph 1. Since price evolution over small time intervals tends to follow continuous trends, these plots allow the detection of anomalies in the trading data. With continuous live data, this graph has the potential to be used to train predictive models for anomaly detection.", className="parralax_text")
+    ]),
+    html.Div(style={"height":"10vh"}),
+
 
     # Graph 2
 
@@ -91,12 +105,17 @@ app.layout = html.Div(className="g1_container", children=[
 
     html.Div(style={"height":"11vh"}),
 
+    html.Div(className="parralax", style={"height":"85vh"}, children=[
+        html.H4("Graph 2, in the form of a tree map, demonstrates the distribution of traded symbols in a given market. Allowing for at-a-glance comparisons, graph 2 can provide insight on the user portfolio efficiently and effectively.", className="parralax_text")
+    ]),
+    html.Div(style={"height":"14vh"}),
+
     # Graph 3
 
 
     html.H1("Graph 3", className="g_h1 g3_h1"),
     html.P(children=["Market: "], style={"color":"#ffffff", "margin": "10px"}),
-    dcc.Dropdown(["TSX", "Aequitas", "Alpha"], "Alpha", id='exchange-dropdown-menu', style={"width": "220px"}),
+    dcc.Dropdown(["TSX", "Aequitas", "Alpha"],"Alpha", id='exchange-dropdown-menu', style={"width": "220px"}, className="dropdown", ),
     html.Br(),
     html.P(children=["Transaction type: "], style={"color":"#ffffff", "margin": "10px"}),
     html.Div(className="radio_div", children=[
@@ -117,6 +136,12 @@ app.layout = html.Div(className="g1_container", children=[
 
     html.Div(style={"height":"11vh"}),
 
+
+    html.Div(className="parralax", style={"height":"85vh"}, children=[
+        html.H4("Graph 3 shows aggregate data in the form of a heatmap to represent the distribution of order completion over the 4 minute period from 9:28:00 to 9:32:00. Order completion time peaks around 9:30:00 for all 3 exchanges, which corresponds to the peak in order requests at market opening.", className="parralax_text")
+    ]),
+    html.Div(style={"height":"16vh"}),
+
     # Graph 4
 
     html.H1("Graph 4", className="g_h1 g4_h1"),
@@ -135,9 +160,14 @@ app.layout = html.Div(className="g1_container", children=[
         )
     ]),
     html.Br(),
-    html.Div(className="graph_container", children=[dcc.Graph(id="time-volume-price-graph", figure={})])
+    html.Div(className="graph_container", children=[dcc.Graph(id="time-volume-price-graph", figure={})]),
+
+    html.Div(className="parralax", style={"height":"85vh"}, children=[
+        html.H4("Graph 4 shows the relationship between the number of orders and prices in smaller time intervals between 9:28:00 and 9:32:00. The number of orders tends to increase as the price of stock options decrease in relation to its respective time interval.", className="parralax_text")
+    ]),
 
 ])
+
 
 # Graph 1 callbacks
 @app.callback(
