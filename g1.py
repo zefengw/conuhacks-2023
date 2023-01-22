@@ -34,10 +34,11 @@ parseFile("data/TSXData.json")
 def generateOptions():
     options = [{"label": "All", "value": "All"}]
 
-    for k in symbol:
-        if k not in options:
-            options.append({"label": k, "value": k})
+    for k in set(symbol):
+        options.append({"label": k, "value": k})
     return options
+
+options = generateOptions()
 
     
 g1 = dash.Dash(__name__)
@@ -62,7 +63,7 @@ g1.layout = html.Div(className="g1_container", children=[
         html.P(children=["Symbol: "], style={"color":"#ffffff", "margin": "10px"}),
         dcc.Dropdown(id="symbol_selected",
         className="dropdown",
-                 options=generateOptions(),
+                 options=options,
                  multi=False,
                  value="All",
                  style={'width':"300px", "background-color": "#D5D5D5"}
@@ -146,5 +147,5 @@ def update_graph(m_selected, s_selected):
     return fig
 
 
-#if (__name__ == "__main__"):
-#    g1.run_server(debug=True)
+if (__name__ == "__main__"):
+    g1.run_server(debug=True)
