@@ -15,20 +15,18 @@ import numpy as np
 
 timestamp, symbol, price, market = [], [], [], []
 
-def parseFile(path: str) -> None:
-    f = open(path)
-    data = json.load(f)
+def parseFile(filename: str) -> None:
+    data = load_json(filename)
     for i in data:
         if i["MessageType"] == "NewOrderRequest":
             price.append(i["OrderPrice"])
             timestamp.append(i["TimeStampEpoch"])
             symbol.append(i["Symbol"])
             market.append(i["Exchange"])
-    f.close()
 
-parseFile("data/AequitasData.json")
-parseFile("data/AlphaData.json")
-parseFile("data/TSXData.json")
+parseFile("AequitasData.json")
+parseFile("AlphaData.json")
+parseFile("TSXData.json")
 
 
 
@@ -41,8 +39,6 @@ def generateOptions():
     for k in set(symbol):
         options.append({"label": k, "value": k})
     return options
-
-options = generateOptions()
 
     
 g1 = dash.Dash(__name__)
@@ -67,7 +63,7 @@ g1.layout = html.Div(className="g1_container", children=[
         html.P(children=["Symbol: "], style={"color":"#ffffff", "margin": "10px"}),
         dcc.Dropdown(id="symbol_selected",
         className="dropdown",
-                 options=options,
+                 options=generateOptions(),
                  multi=False,
                  value="All",
                  style={'width':"200px", "background-color": "#D5D5D5"}
@@ -95,7 +91,6 @@ def update_graph(m_selected, s_selected):
     #dff = dff[dff["Affected by"] == "Varroa_mites"]
 
     # Plotly Express
-
 
     match m_selected:
         case "Aequitas":
@@ -125,8 +120,6 @@ def update_graph(m_selected, s_selected):
         copy2_price = copy_price
         copy2_timestamp = copy_timestamp
         
-
-
     display_dt = []
     for k in copy2_timestamp:
         display_dt.append(epoch_to_datetime(int(k)))
@@ -138,8 +131,6 @@ def update_graph(m_selected, s_selected):
         processed_data = remove_outliers(display_dt, copy2_price)
         clean_df = processed_data[0]
         outliers_df = processed_data[1]
-
-
 
         fig = px.area(x=clean_df["Time"], y=clean_df["Price"], title=f"Order requests over time for {s_selected}",labels=dict(x="Time ", y="Price ($) "))
 
@@ -159,7 +150,6 @@ def update_graph(m_selected, s_selected):
 
 
     return fig
-
 
 
 def remove_outliers(xvalues: list, yvalues: list) -> list:
@@ -198,8 +188,8 @@ def remove_outliers(xvalues: list, yvalues: list) -> list:
 
 
 
-
 if (__name__ == "__main__"):
-    g1.run_server(debug=True)
+    pass
+    #g1.run_server(debug=True)
 
     #remove_outliers([1, 2, 3, 4, 5], [2, 4, 6, 1000, 1])
