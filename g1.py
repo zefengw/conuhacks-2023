@@ -2,12 +2,14 @@ import pandas as pd
 from dash import dcc, html, dash
 from dash.dependencies import Input, Output
 import plotly.express as px
+from utils import *
+
 
 # --- DATA EXTRACTION ---
 import json 
 timestamp, symbol, price, market = [], [], [], []
 
-def parseFile(path):
+def parseFile(path: str) -> None:
     f = open(path)
     data = json.load(f)
     for i in data:
@@ -27,24 +29,20 @@ parseFile("data/TSXData.json")
 # --- DASH ---
 
 
+def generateOptions():
+    options = [{"label": "All", "value": "All"}]
+
+    for k in symbol:
+        if k not in options:
+            options.append({"label": k, "value": k})
+    return options
+
+    
 g1 = dash.Dash()
-
-
-
 g1.layout = html.Div([
 
     html.H1("Graph 1", style={}),
 
-    dcc.Dropdown(id="span_selected",
-                 options=[
-                     {"label": "5 minutes", "value": 0},
-                     {"label": "1 minute", "value": 1},
-                     {"label": "30 seconds", "value": 2},
-                     {"label": "15 seconds", "value": 3}],
-                 multi=False,
-                 value=0,
-                 style={'width': "50%"}
-                 ),
     dcc.Dropdown(id="market_selected",
                  options=[
                     {"label": "Aequitas", "value": "Aequitas"},
@@ -55,27 +53,35 @@ g1.layout = html.Div([
                  value="Aequitas",
                  style={'width': "50%"}
                  ),
+    dcc.Dropdown(id="symbol_selected",
+                 options=generateOptions(),
+                 multi=False,
+                 value="All",
+                 style={'width': "50%"}
+                 ),
+    
 
     html.Br(),
     html.Br(),
 
-    dcc.Graph(id='graph1', figure={})
+    dcc.Graph(id='graph1', figure={}, style={'height': '400px'})
 
 ])
 
 
-
 @g1.callback(
     Output(component_id='graph1', component_property='figure'),
-    [Input(component_id='span_selected', component_property='value'), 
-    Input(component_id='market_selected', component_property='value')]
+    [Input(component_id='market_selected', component_property='value'), Input(component_id='symbol_selected', component_property='value')]
 )
-def update_graph(s_selected, m_selected):
+
+
+def update_graph(m_selected, s_selected):
     
     #dff = dff[dff["Year"] == span_selected]
     #dff = dff[dff["Affected by"] == "Varroa_mites"]
 
     # Plotly Express
+
 
     match m_selected:
         case "Aequitas":
@@ -92,29 +98,35 @@ def update_graph(s_selected, m_selected):
     copy_price = price[i:j]
     copy_timestamp = timestamp[i:j]
     copy_symbol = symbol[i:j]
-    copy_market = market[i:j]
+    copy2_price = []
+    copy2_timestamp = []
+
+
+    if s_selected != "All":
+        for index, value in enumerate(copy_symbol):
+            if value == s_selected:
+                copy2_price.append(copy_price[index])
+                copy2_timestamp.append(copy_timestamp[index])
+    else:
+        copy2_price = copy_price
+        copy2_timestamp = copy_timestamp
+        
+
+
+    display_dt = []
+    for k in copy2_timestamp:
+        display_dt.append(epoch_to_datetime(int(k)))
+
+    if len(display_dt) == 0 or len(copy2_price) == 0:
+        fig = px.line(title="This stock is not traded in the selected market")
+    else:
+        fig = px.line(x=display_dt, y=copy2_price, render_mode='webgl')
 
 
 
-    fig = px.line(x=copy_timestamp, y=copy_price)
-    '''
-    fig = px.choropleth(
-        data_frame=dff,
-        locationmode='USA-states',
-        locations='state_code',
-        scope="usa",
-        color='Pct of Colonies Impacted',
-        hover_data=['State', 'Pct of Colonies Impacted'],
-        color_continuous_scale=px.colors.sequential.YlOrRd,
-        labels={'Pct of Colonies Impacted': '% of Bee Colonies'},
-        template='plotly_dark'
-    )
-    '''
 
     return fig
 
-#print(timestamp)
-#print(price)
 
 if (__name__ == "__main__"):
     g1.run_server(debug=True)
