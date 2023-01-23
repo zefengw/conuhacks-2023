@@ -15,3 +15,5 @@ Activate virtual environement:
 Install project dependencies:
 
 `pip install -r requirements.txt`
+
+The finished project is called "Dot Deck" and can be found [here](https://devpost.com/software/dot-deck)
