@@ -115,7 +115,7 @@ app.layout = html.Div(className="g1_container", children=[
 
     html.H1("Graph 3", className="g_h1 g3_h1"),
     html.P(children=["Market: "], style={"color":"#ffffff", "margin": "10px"}),
-    dcc.Dropdown(["TSX", "Aequitas", "Alpha"],"Alpha", id='exchange-dropdown-menu', style={"width": "220px"}, className="dropdown", ),
+    dcc.Dropdown(["TSX", "Aequitas", "Alpha"], "Aequitas", id='exchange-dropdown-menu', style={"width": "220px"}, className="dropdown", ),
     html.Br(),
     html.P(children=["Transaction type: "], style={"color":"#ffffff", "margin": "10px"}),
     html.Div(className="radio_div", children=[

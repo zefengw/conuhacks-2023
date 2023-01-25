@@ -5,22 +5,12 @@ import plotly.graph_objects as go
 
 import pandas as pd
 
-import os
-import json
-
 from collections import defaultdict
-
-import datetime
-import time
-
-from decimal import Decimal
-
 
 from utils import timestamp_to_datetime, datetime_to_epoch, epoch_to_datetime, load_json, START_EPOCH, END_EPOCH
 
 
-# time interval vs trade fill/cancel duration vs price
-
+# Time interval vs trade fill/cancel duration vs price
 
 
 def generate_duration_graph_df(exchange: str, num_intervals: int, request_type: str):
@@ -64,60 +54,48 @@ def generate_duration_graph_df(exchange: str, num_intervals: int, request_type: 
 
         timestamp = int(original_msg["TimeStampEpoch"]) / 10**9
 
-
-        if timestamp < interval_timestamps[interval_index]:
-            msg_type = original_msg["MessageType"]
-            
-
-            if msg_type == f"{request_type}Request":
-                order_id = original_msg["OrderID"]
-                start_time = original_msg["TimeStampEpoch"]
-                for msg in data_by_order_id[order_id]:
-                    if msg["MessageType"] == f"{request_type}Acknowledged" or msg["MessageType"] == "Trade" or msg["MessageType"] == "Cancelled":
-                        
-                        start_time = original_msg["TimeStampEpoch"]
-                        end_time = msg["TimeStampEpoch"]
-                        duration = (int(end_time) - int(start_time)) / 1000000000
-                        
-                        #symbol = msg["Symbol"]
-
-                        durations.add(int(duration*500)/500)
-
-                        num_orders[(interval_timestamps[interval_index], int(duration*500)/500)] += 1
-
-
-
-                        #new_row = pd.DataFrame({"orderID": [order_id], "orderDuration": [duration], "orderTimestamp": [epoch_to_datetime(interval_timestamps[interval_index])], "Symbol": [msg["Symbol"]], "Exchange": [msg["Exchange"]]})
-                        #df = pd.concat([new_row, df.loc[:]]).reset_index(drop=True)
-                        break
-
-        else:
-            while timestamp >= interval_timestamps[interval_index]:
+        while timestamp >= interval_timestamps[interval_index]:
                 interval_index += 1
 
-            msg_type = original_msg["MessageType"]
-            
+        msg_type = original_msg["MessageType"]
+        
 
-            if msg_type == f"{request_type}Request":
-                order_id = original_msg["OrderID"]
-                start_time = original_msg["TimeStampEpoch"]
-                for msg in data_by_order_id[order_id]:
-                    if msg["MessageType"] == f"{request_type}Acknowledged" or msg["MessageType"] == "Trade" or msg["MessageType"] == "Cancelled":
+        if msg_type == f"{request_type}Request":
+            order_id = original_msg["OrderID"]
+            start_time = original_msg["TimeStampEpoch"]
+
+            order_completion_msg_type = ""
+            if msg_type == "NewOrder":
+                order_completion_msg_type = "Trade"
+            else:
+                order_completion_msg_type = "Cancelled"
+
+            for msg in data_by_order_id[order_id]:
+                if msg["MessageType"] == f"{request_type}Acknowledged" or msg["MessageType"] == order_completion_msg_type:
+                    
+                    start_time = original_msg["TimeStampEpoch"]
+                    end_time = msg["TimeStampEpoch"]
+                    duration = (int(end_time) - int(start_time)) / 1000000000
+                    
+                    #symbol = msg["Symbol"]
+
+                    if duration >= 0:
+
+                        duration = (duration // 0.00001) / 100000
+
+                        print(duration)
                         
-                        start_time = original_msg["TimeStampEpoch"]
-                        end_time = msg["TimeStampEpoch"]
-                        duration = (int(end_time) - int(start_time)) / 1000000000
-                        
-                        #symbol = msg["Symbol"]
-                        durations.add(int(duration*500)/500)
 
-                        num_orders[(interval_timestamps[interval_index], int(duration*500)/500)] += 1
+                        durations.add(duration)
+
+                        num_orders[(interval_timestamps[interval_index], duration)] += 1
 
 
 
-                        #new_row = pd.DataFrame({"orderID": [order_id], "orderDuration": [duration], "orderTimestamp": [epoch_to_datetime(interval_timestamps[interval_index])], "Symbol": [msg["Symbol"]], "Exchange": [msg["Exchange"]]})
-                        #df = pd.concat([new_row, df.loc[:]]).reset_index(drop=True)
-                        break
+                    #new_row = pd.DataFrame({"orderID": [order_id], "orderDuration": [duration], "orderTimestamp": [epoch_to_datetime(interval_timestamps[interval_index])], "Symbol": [msg["Symbol"]], "Exchange": [msg["Exchange"]]})
+                    #df = pd.concat([new_row, df.loc[:]]).reset_index(drop=True)
+                    break
+
 
     for i in range(len(interval_timestamps)):
         for j in durations:
@@ -132,35 +110,6 @@ def generate_duration_graph_df(exchange: str, num_intervals: int, request_type: 
     
     return df
 
-    """
-    for order_id in data_by_order_id:
-        start_time, end_time = "", ""
-
-        for msg in data_by_order_id[order_id]:
-
-            if msg["MessageType"] == f"{request_type}Request":
-                start_time = msg["TimeStampEpoch"]
-                start_time_string = msg["TimeStamp"]
-                
-            elif msg["MessageType"] == f"{request_type}Acknowledged":
-
-                
-                #order_ids.append(order_id)
-                end_time = msg["TimeStampEpoch"]
-
-        print(start_time, end_time)
-
-        if start_time and end_time:
-
-            duration = (int(end_time) - int(start_time)) / 1000000000
-                #order_durations.append(duration)
-                #order_timestamps.append(timestamp_to_datetime(order_request_msg["TimeStamp"]))
-
-            new_row = pd.DataFrame({"orderID": [order_id], "orderDuration": [duration], "orderTimestamp": [timestamp_to_datetime(start_time_string)], "Symbol": [msg["Symbol"]], "Exchange": [msg["Exchange"]]})
-            df = pd.concat([new_row, df.loc[:]]).reset_index(drop=True)
-
-        """
-
 
 app = dash.Dash()
 
@@ -168,7 +117,7 @@ app = dash.Dash()
 app.layout = html.Div(className="g1_container", children=[
     html.H1("Graph 3", className="g_h1 g3_h1"),
     html.P(children=["Market: "], style={"color":"#ffffff", "margin": "10px"}),
-    dcc.Dropdown(["TSX", "Aequitas", "Alpha"], "Alpha", id='exchange-dropdown-menu', style={"width": "220px"}),
+    dcc.Dropdown(["TSX", "Aequitas", "Alpha"], "Aequitas", id='exchange-dropdown-menu', style={"width": "220px"}),
     html.Br(),
     html.P(children=["Transaction type: "], style={"color":"#ffffff", "margin": "10px"}),
     html.Div(className="radio_div", children=[
